@@ -1,0 +1,11 @@
+{
+  "name": "npld-player",
+  "version": "1.0.0-alpha",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron ./src"
+  },
+  "devDependencies": {
+    "electron": "^18.1.0"
+  }
+}
