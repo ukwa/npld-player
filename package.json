@@ -3,6 +3,7 @@
   "productName": "npld-player",
   "version": "1.0.0-alpha",
   "main": "dist/index.js",
+  "license": "MIT",
   "scripts": {
     "start": "tsc && electron-forge start",
     "package": "electron-forge package",
