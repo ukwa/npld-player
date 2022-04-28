@@ -1,10 +1,20 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import electronReload from 'electron-reload';
+
+const isDev = !app.isPackaged;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   // eslint-disable-line global-require
   app.quit();
+}
+
+const srcPath = path.join(__dirname, '../src');
+
+if (isDev) {
+  // Enable hot reload
+  electronReload(srcPath, {});
 }
 
 const createWindow = (): void => {
@@ -13,15 +23,17 @@ const createWindow = (): void => {
     height: 600,
     width: 800,
     webPreferences: {
-      preload: path.join(__dirname, '../src/preload.ts'),
+      preload: path.join(srcPath, 'preload.ts'),
     },
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, '../src/index.html'));
+  mainWindow.loadFile(path.join(srcPath, 'index.html'));
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished
