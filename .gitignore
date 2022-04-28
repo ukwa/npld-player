@@ -88,6 +88,3 @@ typings/
 # Electron-Forge
 out/
 dist/
-
-# misc
-.DS_Store
