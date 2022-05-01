@@ -1,8 +1,38 @@
+* {
+  box-sizing: border-box;
+}
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-      Arial, sans-serif;
-    margin: auto;
-    max-width: 38rem;
-    padding: 2rem;
-  }
-  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: 0;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+}
+
+#app-bar {
+  display: flex;
+  align-items: center;
+  background-color: #fefefe;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+#app-main {
+  background: #eee;
+  height: calc(100vh - 47px);
+}
+
+.address-input-wrapper {
+  flex: 1;
+  padding: 3px 5px;
+}
+
+.icon-button-group {
+  padding: 0 5px;
+}
+
+sl-icon-button {
+  font-size: 1.2rem;
+}
