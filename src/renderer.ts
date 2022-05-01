@@ -12,3 +12,15 @@ import './index.css';
 
 // Set the base path to the folder you copied Shoelace's assets to
 setBasePath('public/shoelace');
+
+const backBtn = document.querySelector('.back-button') as HTMLButtonElement;
+const forwardBtn = document.querySelector(
+  '.forward-button'
+) as HTMLButtonElement;
+
+backBtn.addEventListener('click', (e: MouseEvent) => {
+  console.log('clicked back', e);
+});
+forwardBtn.addEventListener('click', (e: MouseEvent) => {
+  console.log('clicked forward', e);
+});
