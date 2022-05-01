@@ -6,7 +6,7 @@ module.exports = [
   new ForkTsCheckerWebpackPlugin(),
   new CopyPlugin({
     patterns: [
-      // Copy Shoelace assets to dist/shoelace
+      // Copy Shoelace assets to public/shoelace
       {
         from: path.resolve(
           __dirname,
