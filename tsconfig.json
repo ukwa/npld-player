@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
     "allowJs": true,
     "module": "commonjs",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
     "baseUrl": ".",
@@ -13,5 +14,5 @@
       "*": ["node_modules/*"]
     }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*"]
 }

@@ -2,34 +2,40 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
-    />
+    /> -->
     <title>NPLD Player</title>
-    <link rel="stylesheet" href="index.css" />
-    <link rel="stylesheet" href="dist/bundle.css" />
   </head>
   <body>
+    <npld-player></npld-player>
     <div id="app">
       <header id="app-bar">
         <div class="icon-button-group">
-          <sl-icon-button name="chevron-left"></sl-icon-button>
-          <sl-icon-button name="chevron-right"></sl-icon-button>
-          <sl-icon-button name="house"></sl-icon-button>
+          <sl-icon-button
+            class="back-button"
+            name="chevron-left"
+          ></sl-icon-button>
+          <sl-icon-button
+            class="forward-button"
+            name="chevron-right"
+          ></sl-icon-button>
+          <sl-icon-button class="home-button" name="house"></sl-icon-button>
         </div>
-        <div id="address-input">
-          <sl-input filled placeholder="https://">
+        <div class="address-input-wrapper">
+          <sl-input class="address-input" filled placeholder="https://">
             <!-- <sl-icon-button
               name="arrow-clockwise"
               slot="prefix"
               style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
             ></sl-icon-button> -->
             <sl-icon-button
+              class="go-button"
               name="arrow-right"
               slot="suffix"
               style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
@@ -42,14 +48,18 @@
           </sl-input>
         </div>
         <div class="icon-button-group">
-          <sl-icon-button name="zoom-in"></sl-icon-button>
-          <sl-icon-button name="zoom-out"></sl-icon-button>
-          <sl-icon-button name="printer"></sl-icon-button>
+          <sl-icon-button
+            class="zoom-in-button"
+            name="zoom-in"
+          ></sl-icon-button>
+          <sl-icon-button
+            class="zoom-out-button"
+            name="zoom-out"
+          ></sl-icon-button>
+          <sl-icon-button class="print-button" name="printer"></sl-icon-button>
         </div>
       </header>
       <main id="app-main"></main>
     </div>
-
-    <script src="dist/app.js"></script>
   </body>
 </html>

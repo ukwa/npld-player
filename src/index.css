@@ -21,10 +21,10 @@ body {
 
 #app-main {
   background: #eee;
-  height: calc(100vh - 46px);
+  height: calc(100vh - 47px);
 }
 
-#address-input {
+.address-input-wrapper {
   flex: 1;
   padding: 3px 5px;
 }
