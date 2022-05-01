@@ -1,17 +1,22 @@
 import path from 'path';
-import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy';
 import css from 'rollup-plugin-css-only';
 import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
 
-const outPath = path.resolve(__dirname, 'src/dist');
+const outPath = path.resolve(__dirname, 'src/out');
 
 export default {
   input: 'src/app.ts',
-  output: [{ dir: outPath, format: 'es' }],
+  output: [{ dir: outPath, format: 'cjs' }],
   plugins: [
     resolve(),
-    commonjs(),
+    typescript({
+      compilerOptions: {
+        outDir: 'src/out',
+        module: 'esnext',
+      },
+    }),
     // Bundle styles into dist/bundle.css
     css({
       output: 'bundle.css',
