@@ -116,7 +116,7 @@ export class NPLDPlayer extends LitElement {
     return html`
       <main>
         <webview
-          src=${this.webAddress}
+          src=${INITIAL_URL}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
           @did-finish-loading=${() => (this.isLoading = false)}
