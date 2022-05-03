@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
-import { serialize } from '@shoelace-style/shoelace/dist/utilities/form.js';
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
@@ -109,11 +108,9 @@ export class NPLDPlayer extends LitElement {
   }
 
   private goToAddress() {
-    console.log(
-      'TODO goToAddress:',
-      new FormData(this.formElem).get('address'),
-      serialize(this.formElem)
-    );
+    const address = new FormData(this.formElem).get('address');
+
+    this.webviewElem.loadURL(address);
   }
 
   private goBack() {
