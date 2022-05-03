@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 
+// TODO update initial view/page
+const INITIAL_URL = 'https://webrecorder.net';
+
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
   static styles = css`
@@ -47,8 +50,7 @@ export class NPLDPlayer extends LitElement {
   private canGoForward = false;
 
   @state()
-  // TODO update initial view/page
-  private webAddress = 'https://webrecorder.net';
+  private webAddress = INITIAL_URL;
 
   @query('.address-form')
   private addressForm?: HTMLFormElement;
@@ -76,7 +78,12 @@ export class NPLDPlayer extends LitElement {
         <sl-icon-button name="house" @click=${this.goHome}></sl-icon-button>
       </div>
       <form @submit=${this.onSubmit} class="address-form">
-        <sl-input name="address" placeholder="https://" filled>
+        <sl-input
+          name="address"
+          placeholder="https://"
+          value=${this.webAddress}
+          filled
+        >
           ${this.webAddress
             ? html`<sl-icon-button
                 name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
@@ -112,6 +119,9 @@ export class NPLDPlayer extends LitElement {
           src=${this.webAddress}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
+          @did-finish-loading=${() => (this.isLoading = false)}
+          @did-fail-load=${() => (this.isLoading = false)}
+          @did-navigate=${this.onNavigate}
         ></webview>
       </main>
     `;
@@ -123,6 +133,10 @@ export class NPLDPlayer extends LitElement {
   }
 
   private async goToAddress() {
+    if (this.isLoading) {
+      this.cancelLoad();
+    }
+
     const addressValue = new FormData(this.addressForm).get(
       'address'
     ) as string;
@@ -134,7 +148,7 @@ export class NPLDPlayer extends LitElement {
 
     // TODO add $WEB_ARCHIVE_PREFIX
     try {
-      await this.webview.loadURL(`${address}`);
+      await this.webview.loadURL(`${address.replace(/$\//, '')}/`);
 
       this.webAddress = address;
     } catch (e) {
@@ -143,6 +157,12 @@ export class NPLDPlayer extends LitElement {
       // TODO handle error
     }
 
+    this.canGoBack = this.webview.canGoBack();
+    this.canGoForward = this.webview.canGoForward();
+  }
+
+  private onNavigate() {
+    this.webAddress = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
     this.canGoForward = this.webview.canGoForward();
   }
@@ -156,15 +176,15 @@ export class NPLDPlayer extends LitElement {
   }
 
   private goBack() {
-    console.log('TODO goBack');
+    this.webview.goBack();
   }
 
   private goForward() {
-    console.log('TODO goForward');
+    this.webview.goForward();
   }
 
   private goHome() {
-    console.log('TODO goHome');
+    this.webview.loadURL(INITIAL_URL);
   }
 
   private zoomIn() {
