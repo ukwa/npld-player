@@ -15,6 +15,7 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    show: false, // show once the renderer process has rendered
     height: 600,
     width: 800,
     webPreferences: {
@@ -24,6 +25,10 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
 
   if (isDev) {
     // Open the DevTools.
