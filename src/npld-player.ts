@@ -108,12 +108,22 @@ export class NPLDPlayer extends LitElement {
     this.goToAddress();
   }
 
-  private goToAddress() {
-    const address = new FormData(this.formElem).get('address');
+  private async goToAddress() {
+    const addressValue = new FormData(this.formElem).get('address') as string;
+
+    // TODO URL formatting
+    const address = addressValue.startsWith('http')
+      ? addressValue
+      : `https://${addressValue}`;
 
     // TODO add $WEB_ARCHIVE_PREFIX
-    // TODO URL formatting
-    this.webviewElem.loadURL(`${address}`);
+    try {
+      await this.webviewElem.loadURL(`${address}`);
+    } catch (e) {
+      console.error(e);
+
+      // TODO handle error
+    }
   }
 
   private goBack() {
