@@ -40,11 +40,21 @@ export class NPLDPlayer extends LitElement {
   @state()
   private isLoading = false;
 
+  @state()
+  private canGoBack = false;
+
+  @state()
+  private canGoForward = false;
+
+  @state()
+  // TODO update initial view/page
+  private webAddress = 'https://webrecorder.net';
+
   @query('.address-form')
-  private formElem?: HTMLFormElement;
+  private addressForm?: HTMLFormElement;
 
   @query('webview')
-  private webviewElem?: any;
+  private webview?: any;
 
   render() {
     return html` ${this.renderAppBar()} ${this.renderMain()}`;
@@ -55,22 +65,27 @@ export class NPLDPlayer extends LitElement {
       <div class="icon-button-group">
         <sl-icon-button
           name="chevron-left"
+          ?disabled=${!this.canGoBack}
           @click=${this.goBack}
         ></sl-icon-button>
         <sl-icon-button
           name="chevron-right"
+          ?disabled=${!this.canGoForward}
           @click=${this.goForward}
         ></sl-icon-button>
         <sl-icon-button name="house" @click=${this.goHome}></sl-icon-button>
       </div>
       <form @submit=${this.onSubmit} class="address-form">
         <sl-input name="address" placeholder="https://" filled>
-          <sl-icon-button
-            name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
-            slot="prefix"
-            style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
-            @click=${console.log}
-          ></sl-icon-button>
+          ${this.webAddress
+            ? html`<sl-icon-button
+                name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
+                slot="prefix"
+                style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
+                @click=${this.isLoading ? this.cancelLoad : this.reload}
+              ></sl-icon-button>`
+            : ''}
+
           <sl-icon-button
             name="arrow-right"
             slot="suffix"
@@ -93,9 +108,8 @@ export class NPLDPlayer extends LitElement {
   private renderMain() {
     return html`
       <main>
-        <!-- TODO update initial view/page -->
         <webview
-          src="https://webrecorder.net"
+          src=${this.webAddress}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
         ></webview>
@@ -109,7 +123,9 @@ export class NPLDPlayer extends LitElement {
   }
 
   private async goToAddress() {
-    const addressValue = new FormData(this.formElem).get('address') as string;
+    const addressValue = new FormData(this.addressForm).get(
+      'address'
+    ) as string;
 
     // TODO URL formatting
     const address = addressValue.startsWith('http')
@@ -118,12 +134,25 @@ export class NPLDPlayer extends LitElement {
 
     // TODO add $WEB_ARCHIVE_PREFIX
     try {
-      await this.webviewElem.loadURL(`${address}`);
+      await this.webview.loadURL(`${address}`);
+
+      this.webAddress = address;
     } catch (e) {
       console.error(e);
 
       // TODO handle error
     }
+
+    this.canGoBack = this.webview.canGoBack();
+    this.canGoForward = this.webview.canGoForward();
+  }
+
+  private reload() {
+    this.webview.reload();
+  }
+
+  private cancelLoad() {
+    this.webview.stop();
   }
 
   private goBack() {
