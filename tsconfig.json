@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "module": "commonjs",
+    "target": "ES2019",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
@@ -10,6 +11,7 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "experimentalDecorators": true,
     "paths": {
       "*": ["node_modules/*"]
     }
