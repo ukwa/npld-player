@@ -93,8 +93,9 @@ export class NPLDPlayer extends LitElement {
   private renderMain() {
     return html`
       <main>
+        <!-- TODO update initial view/page -->
         <webview
-          src="https://www.github.com/"
+          src="https://webrecorder.net"
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
         ></webview>
@@ -110,7 +111,9 @@ export class NPLDPlayer extends LitElement {
   private goToAddress() {
     const address = new FormData(this.formElem).get('address');
 
-    this.webviewElem.loadURL(address);
+    // TODO add $WEB_ARCHIVE_PREFIX
+    // TODO URL formatting
+    this.webviewElem.loadURL(`${address}`);
   }
 
   private goBack() {
