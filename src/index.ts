@@ -26,9 +26,17 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  // Main window events:
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  mainWindow.webContents.on(
+    'will-attach-webview',
+    (evt, webPreferences, params) => {
+      console.log('will-attach-webview:', evt, webPreferences, params);
+    }
+  );
 
   if (isDev) {
     // Open the DevTools.

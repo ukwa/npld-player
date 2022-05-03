@@ -9,6 +9,8 @@ body {
 }
 
 #webview {
+  display: inline-flex;
   background: #eee;
   height: calc(100vh - 47px); /* app height - app bar height */
+  width: 100vw;
 }
