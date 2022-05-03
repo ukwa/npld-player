@@ -34,7 +34,8 @@ const createWindow = (): void => {
   mainWindow.webContents.on(
     'will-attach-webview',
     (evt, webPreferences, params) => {
-      console.log('will-attach-webview:', evt, webPreferences, params);
+      // TODO strip away preload script for security?
+      // See docs on `webviewTag`: https://www.electronjs.org/docs/latest/api/browser-window
     }
   );
 
