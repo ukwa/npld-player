@@ -41,7 +41,9 @@ const createWindow = (): void => {
 
   if (isDev) {
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({
+      mode: 'detach',
+    });
   }
 };
 
