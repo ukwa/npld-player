@@ -1,8 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
-
-// TODO update initial view/page
-const INITIAL_URL = 'https://webrecorder.net';
+import { customElement, query, state, property } from 'lit/decorators.js';
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
@@ -40,6 +37,9 @@ export class NPLDPlayer extends LitElement {
     }
   `;
 
+  @property({ type: String })
+  private webAddress = '';
+
   @state()
   private isLoading = false;
 
@@ -48,9 +48,6 @@ export class NPLDPlayer extends LitElement {
 
   @state()
   private canGoForward = false;
-
-  @state()
-  private webAddress = INITIAL_URL;
 
   @query('.address-form')
   private addressForm?: HTMLFormElement;
@@ -116,7 +113,7 @@ export class NPLDPlayer extends LitElement {
     return html`
       <main>
         <webview
-          src=${INITIAL_URL}
+          src=${this.webAddress}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
           @did-finish-loading=${() => (this.isLoading = false)}
@@ -184,7 +181,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private goHome() {
-    this.webview.loadURL(INITIAL_URL);
+    this.webview.loadURL(this.webAddress);
   }
 
   private zoomIn() {
