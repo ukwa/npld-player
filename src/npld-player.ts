@@ -90,33 +90,53 @@ export class NPLDPlayer extends LitElement {
       <div class="icon-button-group">
         <sl-icon-button
           name="chevron-left"
+          label="Back"
           ?disabled=${!this.canGoBack}
           @click=${this.goBack}
         ></sl-icon-button>
         <sl-icon-button
           name="chevron-right"
+          label="Forward"
           ?disabled=${!this.canGoForward}
           @click=${this.goForward}
         ></sl-icon-button>
-        <sl-icon-button name="house" @click=${this.goHome}></sl-icon-button>
-        ${this.url
+        <sl-icon-button
+          name="house"
+          label="Home"
+          @click=${this.goHome}
+        ></sl-icon-button>
+        ${this.isLoading
           ? html`<sl-icon-button
-              name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
+              name="x-lg"
+              label="Cancel"
               slot="prefix"
-              style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
-              @click=${this.isLoading ? this.cancelLoad : this.reload}
+              @click=${this.cancelLoad}
             ></sl-icon-button>`
-          : ''}
+          : html`<sl-icon-button
+              name="arrow-clockwise"
+              label="Reload"
+              slot="prefix"
+              @click=${this.reload}
+            ></sl-icon-button>`}
       </div>
       ${this.renderWebAddress()}
-      <div class="icon-button-group">
-        <sl-icon-button name="zoom-in" @click=${this.zoomIn}></sl-icon-button>
-        <sl-icon-button name="zoom-out" @click=${this.zoomOut}></sl-icon-button>
+      <!-- <div class="icon-button-group">
+        <sl-icon-button
+          name="zoom-in"
+          label="Zoom in"
+          @click=${this.zoomIn}
+        ></sl-icon-button>
+        <sl-icon-button
+          name="zoom-out"
+          label="Zoom out"
+          @click=${this.zoomOut}
+        ></sl-icon-button>
         <sl-icon-button
           name="printer"
+          label="Print"
           @click=${this.printPage}
         ></sl-icon-button>
-      </div>
+      </div> -->
     </header>`;
   }
 
