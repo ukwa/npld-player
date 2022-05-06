@@ -67,7 +67,7 @@ export class NPLDPlayer extends LitElement {
   `;
 
   @property({ type: String })
-  private webAddress = '';
+  private url = '';
 
   @state()
   private isLoading = false;
@@ -99,7 +99,7 @@ export class NPLDPlayer extends LitElement {
           @click=${this.goForward}
         ></sl-icon-button>
         <sl-icon-button name="house" @click=${this.goHome}></sl-icon-button>
-        ${this.webAddress
+        ${this.url
           ? html`<sl-icon-button
               name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
               slot="prefix"
@@ -124,7 +124,7 @@ export class NPLDPlayer extends LitElement {
     return html`
       <main>
         <webview
-          src=${this.webAddress}
+          src=${this.url}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
           @did-finish-loading=${() => (this.isLoading = false)}
@@ -139,12 +139,12 @@ export class NPLDPlayer extends LitElement {
     let url: URL;
 
     try {
-      url = new URL(this.webAddress);
+      url = new URL(this.url);
     } catch {
       return '';
     }
 
-    const [prefix, suffix] = this.webAddress.split(url.hostname);
+    const [prefix, suffix] = this.url.split(url.hostname);
 
     return html`
       <div class="address-field" tabindex="0">
@@ -157,7 +157,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private onNavigate() {
-    this.webAddress = this.webview.getURL();
+    this.url = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
     this.canGoForward = this.webview.canGoForward();
   }
@@ -179,7 +179,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private goHome() {
-    this.webview.loadURL(this.webAddress);
+    this.webview.loadURL(this.url);
   }
 
   private zoomIn() {
