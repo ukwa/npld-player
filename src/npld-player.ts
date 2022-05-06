@@ -120,7 +120,7 @@ export class NPLDPlayer extends LitElement {
             ></sl-icon-button>`}
       </div>
       ${this.renderWebAddress()}
-      <!-- <div class="icon-button-group">
+      <div class="icon-button-group">
         <sl-icon-button
           name="zoom-in"
           label="Zoom in"
@@ -136,7 +136,7 @@ export class NPLDPlayer extends LitElement {
           label="Print"
           @click=${this.printPage}
         ></sl-icon-button>
-      </div> -->
+      </div>
     </header>`;
   }
 
