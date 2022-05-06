@@ -17,22 +17,51 @@ export class NPLDPlayer extends LitElement {
     }
 
     .icon-button-group {
-      padding: 0 5px;
+      padding: 2px 5px;
+      user-select: none;
     }
 
-    .address-form {
+    .address-field {
+      position: relative;
       flex: 1;
-      padding: 3px 5px;
+      padding: 5px;
+      color: var(--sl-color-neutral-900);
+      line-height: 1;
+      font-size: var(--sl-font-size-small);
+      overflow-x: auto;
+      overflow-y: hidden;
+      width: auto;
+      white-space: nowrap;
+    }
+
+    .address-field::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Visual indication of URL overflow */
+    .address-field:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 1.4rem;
+      width: 1rem;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
+    }
+
+    .text-gray {
+      color: var(--sl-color-neutral-500);
     }
 
     sl-icon-button {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
     }
 
     webview {
       display: inline-flex;
       background: #eee;
-      height: calc(100vh - 47px); /* app height - app bar height */
+      height: calc(100vh - 41px); /* app height - app bar height */
       width: 100vw;
     }
   `;
@@ -48,9 +77,6 @@ export class NPLDPlayer extends LitElement {
 
   @state()
   private canGoForward = false;
-
-  @query('.address-form')
-  private addressForm?: HTMLFormElement;
 
   @query('webview')
   private webview?: any;
@@ -73,32 +99,17 @@ export class NPLDPlayer extends LitElement {
           @click=${this.goForward}
         ></sl-icon-button>
         <sl-icon-button name="house" @click=${this.goHome}></sl-icon-button>
+        ${this.webAddress
+          ? html`<sl-icon-button
+              name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
+              slot="prefix"
+              style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
+              @click=${this.isLoading ? this.cancelLoad : this.reload}
+            ></sl-icon-button>`
+          : ''}
       </div>
-      <form @submit=${this.onSubmit} class="address-form">
-        <sl-input
-          name="address"
-          placeholder="https://"
-          value=${this.webAddress}
-          filled
-        >
-          ${this.webAddress
-            ? html`<sl-icon-button
-                name=${this.isLoading ? 'x-lg' : 'arrow-clockwise'}
-                slot="prefix"
-                style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
-                @click=${this.isLoading ? this.cancelLoad : this.reload}
-              ></sl-icon-button>`
-            : ''}
-
-          <sl-icon-button
-            name="arrow-right"
-            slot="suffix"
-            style="--sl-input-spacing-medium: var(--sl-spacing-x-small)"
-            @click=${this.goToAddress}
-          ></sl-icon-button>
-        </sl-input>
-      </form>
-      <div>
+      ${this.renderWebAddress()}
+      <div class="icon-button-group">
         <sl-icon-button name="zoom-in" @click=${this.zoomIn}></sl-icon-button>
         <sl-icon-button name="zoom-out" @click=${this.zoomOut}></sl-icon-button>
         <sl-icon-button
@@ -124,38 +135,25 @@ export class NPLDPlayer extends LitElement {
     `;
   }
 
-  private onSubmit(e: Event) {
-    e.preventDefault();
-    this.goToAddress();
-  }
+  private renderWebAddress() {
+    let url: URL;
 
-  private async goToAddress() {
-    if (this.isLoading) {
-      this.cancelLoad();
-    }
-
-    const addressValue = new FormData(this.addressForm).get(
-      'address'
-    ) as string;
-
-    // TODO URL formatting
-    const address = addressValue.startsWith('http')
-      ? addressValue
-      : `https://${addressValue}`;
-
-    // TODO add $WEB_ARCHIVE_PREFIX
     try {
-      await this.webview.loadURL(`${address.replace(/$\//, '')}/`);
-
-      this.webAddress = address;
-    } catch (e) {
-      console.error(e);
-
-      // TODO handle error
+      url = new URL(this.webAddress);
+    } catch {
+      return '';
     }
 
-    this.canGoBack = this.webview.canGoBack();
-    this.canGoForward = this.webview.canGoForward();
+    const [prefix, suffix] = this.webAddress.split(url.hostname);
+
+    return html`
+      <div class="address-field" tabindex="0">
+        <span class="text-gray">${prefix}</span>${url.hostname}<span
+          class="text-gray"
+          >${suffix}</span
+        >
+      </div>
+    `;
   }
 
   private onNavigate() {
