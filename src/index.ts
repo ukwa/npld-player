@@ -3,8 +3,9 @@ import { app, BrowserWindow } from 'electron';
 // plugin that tells the Electron app where to look for the Webpack-bundled app code (depending on
 // whether you're running in development or production).
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
-// const isDev = !app.isPackaged;
+const isDev = !app.isPackaged;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -15,15 +16,38 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    show: false, // show once the renderer process has rendered
     height: 600,
     width: 800,
+    webPreferences: {
+      webviewTag: true, // Enable <webview>
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    },
   });
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Main window events:
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.maximize();
+    mainWindow.show();
+  });
+
+  mainWindow.webContents.on(
+    'will-attach-webview',
+    (evt, webPreferences, params) => {
+      // TODO strip away preload script for security?
+      // See docs on `webviewTag`: https://www.electronjs.org/docs/latest/api/browser-window
+    }
+  );
+
+  if (isDev) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools({
+      mode: 'detach',
+    });
+  }
 };
 
 // This method will be called when Electron has finished

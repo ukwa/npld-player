@@ -7,8 +7,3 @@ body {
     Arial, sans-serif;
   margin: 0;
 }
-
-#webview {
-  background: #eee;
-  height: calc(100vh - 47px); /* app height - app bar height */
-}

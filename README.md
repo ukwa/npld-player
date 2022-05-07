@@ -6,6 +6,14 @@ Secured browser for accessing NPLD content in Legal Deposit Library reading room
 
 ### Quickstart
 
+Copy environment variables:
+
+```sh
+cp sample.env .env
+```
+
+Install and run app locally:
+
 ```sh
 yarn && yarn start
 ```
