@@ -34,14 +34,6 @@ const createWindow = (): void => {
     mainWindow.show();
   });
 
-  mainWindow.webContents.on(
-    'will-attach-webview',
-    (evt, webPreferences, params) => {
-      // TODO strip away preload script for security?
-      // See docs on `webviewTag`: https://www.electronjs.org/docs/latest/api/browser-window
-    }
-  );
-
   if (isDev) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools({
