@@ -66,6 +66,10 @@ export class NPLDPlayer extends LitElement {
     }
   `;
 
+  // Chromium visual zoom minimum/maximum level
+  static zoomLevelMax = 9;
+  static zoomLevelMin = -8;
+
   @property({ type: String })
   private url = '';
 
@@ -78,8 +82,19 @@ export class NPLDPlayer extends LitElement {
   @state()
   private canGoForward = false;
 
+  // https://www.electronjs.org/docs/latest/api/webview-tag#webviewsetzoomlevellevel
+  @state()
+  private zoomLevel = 0;
+
+  // https://www.electronjs.org/docs/latest/api/webview-tag#tag-attributes
   @query('webview')
   private webview?: any;
+
+  updated(changedProperties: Map<string, any>) {
+    if (changedProperties.has('zoomLevel')) {
+      this.webview?.setZoomLevel(this.zoomLevel);
+    }
+  }
 
   render() {
     return html` ${this.renderAppBar()} ${this.renderMain()}`;
@@ -125,11 +140,13 @@ export class NPLDPlayer extends LitElement {
           name="zoom-in"
           label="Zoom in"
           @click=${this.zoomIn}
+          ?disabled=${this.zoomLevel === NPLDPlayer.zoomLevelMax}
         ></sl-icon-button>
         <sl-icon-button
           name="zoom-out"
           label="Zoom out"
           @click=${this.zoomOut}
+          ?disabled=${this.zoomLevel === NPLDPlayer.zoomLevelMin}
         ></sl-icon-button>
         <sl-icon-button
           name="printer"
@@ -203,11 +220,15 @@ export class NPLDPlayer extends LitElement {
   }
 
   private zoomIn() {
-    console.log('TODO zoomIn');
+    if (this.zoomLevel < NPLDPlayer.zoomLevelMax) {
+      this.zoomLevel += 1;
+    }
   }
 
   private zoomOut() {
-    console.log('TODO zoomOut');
+    if (this.zoomLevel > NPLDPlayer.zoomLevelMin) {
+      this.zoomLevel -= 1;
+    }
   }
 
   private printPage() {
