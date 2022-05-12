@@ -186,7 +186,7 @@ export class NPLDPlayer extends LitElement {
       <main>
         <webview
           src=${this.url}
-          @dom-ready=${() => (this.isReady = true)}
+          @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
           @did-finish-loading=${() => (this.isLoading = false)}
@@ -216,6 +216,11 @@ export class NPLDPlayer extends LitElement {
         >
       </div>
     `;
+  }
+
+  private onWebviewReady() {
+    this.zoomFactor = this.webview.getZoomFactor();
+    this.isReady = true;
   }
 
   private onNavigate() {
