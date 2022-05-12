@@ -91,8 +91,11 @@ export class NPLDPlayer extends LitElement {
   private webview?: any;
 
   updated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('zoomLevel')) {
-      this.webview?.setZoomLevel(this.zoomLevel);
+    if (
+      changedProperties.get('zoomLevel') !== undefined &&
+      changedProperties.has('zoomLevel')
+    ) {
+      this.zoomWebview();
     }
   }
 
@@ -229,6 +232,14 @@ export class NPLDPlayer extends LitElement {
     if (this.zoomLevel > NPLDPlayer.zoomLevelMin) {
       this.zoomLevel -= 1;
     }
+  }
+
+  private zoomWebview() {
+    if (!this.webview || this.webview.getZoomLevel() === this.zoomLevel) {
+      return;
+    }
+
+    this.webview.setZoomLevel(this.zoomLevel);
   }
 
   private printPage() {
