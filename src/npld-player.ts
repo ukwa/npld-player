@@ -275,8 +275,16 @@ export class NPLDPlayer extends LitElement {
     }
   }
 
-  private printPage() {
-    console.log('TODO printPage');
+  // https://www.electronjs.org/docs/latest/api/webview-tag#webviewprintoptions
+  private async printPage() {
+    try {
+      // const res: Uint8Array = await this.webview.printToPDF({});
+      // console.log(res);
+
+      await this.webview.print();
+    } catch (e) {
+      console.debug(e);
+    }
   }
 
   // Map zoom level to zoom factor
