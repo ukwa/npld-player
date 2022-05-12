@@ -3,6 +3,8 @@ import { customElement, query, state, property } from 'lit/decorators.js';
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
+  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS;
+
   static styles = css`
     :host {
       height: 100vh;
@@ -78,9 +80,6 @@ export class NPLDPlayer extends LitElement {
       width: 100vw;
     }
   `;
-
-  @property({ type: String })
-  private url = '';
 
   @state()
   private isReady = false;
@@ -185,7 +184,7 @@ export class NPLDPlayer extends LitElement {
     return html`
       <main>
         <webview
-          src=${this.url}
+          src=${NPLDPlayer.initialWebAddress}
           @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
@@ -201,12 +200,12 @@ export class NPLDPlayer extends LitElement {
     let url: URL;
 
     try {
-      url = new URL(this.url);
+      url = new URL(NPLDPlayer.initialWebAddress);
     } catch {
       return '';
     }
 
-    const [prefix, suffix] = this.url.split(url.hostname);
+    const [prefix, suffix] = NPLDPlayer.initialWebAddress.split(url.hostname);
 
     return html`
       <div class="address-field" tabindex="0">
@@ -224,7 +223,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private onNavigate() {
-    this.url = this.webview.getURL();
+    NPLDPlayer.initialWebAddress = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
     this.canGoForward = this.webview.canGoForward();
   }
@@ -246,7 +245,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private goHome() {
-    this.webview.loadURL(this.url);
+    this.webview.loadURL(NPLDPlayer.initialWebAddress);
   }
 
   private zoomIn() {
