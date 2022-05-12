@@ -4,6 +4,7 @@ import { customElement, query, state, property } from 'lit/decorators.js';
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
   static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS;
+  static isPrintEnabled = process.env.NPLD_PLAYER_ENABLE_PRINT === 'true';
 
   static styles = css`
     header {
@@ -171,11 +172,13 @@ export class NPLDPlayer extends LitElement {
           ?disabled=${NPLDPlayer.zoomFactorMap[this.zoomLevel - 1] ===
           undefined}
         ></sl-icon-button>
-        <sl-icon-button
-          name="printer"
-          label="Print"
-          @click=${this.printPage}
-        ></sl-icon-button>
+        ${NPLDPlayer.isPrintEnabled
+          ? html`<sl-icon-button
+              name="printer"
+              label="Print"
+              @click=${this.printPage}
+            ></sl-icon-button>`
+          : ''}
       </div>
     </header>`;
   }
