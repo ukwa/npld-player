@@ -35,6 +35,7 @@ const createWindow = (): void => {
     // TODO show user feedback?
     session.defaultSession.on('will-download', (event, item, webContents) => {
       event.preventDefault();
+      console.log(`Download Blocked for ${item.getURL()} - (${item.getMimeType()})`);
     });
 
     callback({
