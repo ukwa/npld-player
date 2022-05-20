@@ -17,6 +17,8 @@ export class NPLDPlayer extends LitElement {
     }
 
     .icon-button-group {
+      display: flex;
+      align-items: center;
       padding: 2px 5px;
       user-select: none;
     }
@@ -54,6 +56,17 @@ export class NPLDPlayer extends LitElement {
       color: var(--sl-color-neutral-500);
     }
 
+    .zoom-scale-label {
+      display: inline-block;
+      background-color: var(--sl-color-neutral-100);
+      color: var(--sl-color-neutral-600);
+      padding: 0.25rem;
+      border-radius: var(--sl-border-radius-small);
+      width: 2.5rem;
+      font-size: var(--sl-font-size-x-small);
+      text-align: center;
+    }
+
     sl-icon-button {
       font-size: 1.25rem;
     }
@@ -70,6 +83,9 @@ export class NPLDPlayer extends LitElement {
   private url = '';
 
   @state()
+  private isReady = false;
+
+  @state()
   private isLoading = false;
 
   @state()
@@ -78,8 +94,15 @@ export class NPLDPlayer extends LitElement {
   @state()
   private canGoForward = false;
 
+  // https://www.electronjs.org/docs/latest/api/webview-tag#tag-attributes
   @query('webview')
   private webview?: any;
+
+  // https://www.electronjs.org/docs/latest/api/webview-tag#webviewsetzoomfactorfactor
+  @state()
+  private zoomFactor = 1;
+
+  private zoomLevel = 0;
 
   render() {
     return html` ${this.renderAppBar()} ${this.renderMain()}`;
@@ -121,15 +144,33 @@ export class NPLDPlayer extends LitElement {
       </div>
       ${this.renderWebAddress()}
       <div class="icon-button-group">
+        ${this.zoomFactor !== 1
+          ? html`<div
+                class="zoom-scale-label"
+                aria-label="Zoom scale"
+                aria-live="polite"
+              >
+                ${(this.zoomFactor * 100).toFixed(0)}%
+              </div>
+
+              <sl-button variant="text" size="small" @click=${this.resetZoom}
+                >Reset</sl-button
+              > `
+          : html``}
+
         <sl-icon-button
           name="zoom-in"
           label="Zoom in"
           @click=${this.zoomIn}
+          ?disabled=${NPLDPlayer.zoomFactorMap[this.zoomLevel + 1] ===
+          undefined}
         ></sl-icon-button>
         <sl-icon-button
           name="zoom-out"
           label="Zoom out"
           @click=${this.zoomOut}
+          ?disabled=${NPLDPlayer.zoomFactorMap[this.zoomLevel - 1] ===
+          undefined}
         ></sl-icon-button>
         <sl-icon-button
           name="printer"
@@ -145,6 +186,7 @@ export class NPLDPlayer extends LitElement {
       <main>
         <webview
           src=${this.url}
+          @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
           @did-finish-loading=${() => (this.isLoading = false)}
@@ -176,6 +218,11 @@ export class NPLDPlayer extends LitElement {
     `;
   }
 
+  private onWebviewReady() {
+    this.zoomFactor = this.webview.getZoomFactor();
+    this.isReady = true;
+  }
+
   private onNavigate() {
     this.url = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
@@ -203,14 +250,53 @@ export class NPLDPlayer extends LitElement {
   }
 
   private zoomIn() {
-    console.log('TODO zoomIn');
+    this.zoomLevel += 1;
+    this.updateZoomFactor();
   }
 
   private zoomOut() {
-    console.log('TODO zoomOut');
+    this.zoomLevel -= 1;
+    this.updateZoomFactor();
+  }
+
+  private resetZoom() {
+    this.zoomLevel = 0;
+    this.updateZoomFactor();
+  }
+
+  private updateZoomFactor() {
+    const factor = NPLDPlayer.zoomFactorMap[this.zoomLevel];
+
+    if (factor !== undefined) {
+      this.webview.setZoomFactor(factor);
+      this.zoomFactor = factor;
+    }
   }
 
   private printPage() {
     console.log('TODO printPage');
   }
+
+  // Map zoom level to zoom factor
+  // Manually copied from Chrome, the Chromium max is
+  // 500% and min and 25%
+  static zoomFactorMap: Record<number, number> = {
+    9: 5.0,
+    8: 4.0,
+    7: 3.0,
+    6: 2.5,
+    5: 2.0,
+    4: 1.75,
+    3: 1.5,
+    2: 1.25,
+    1: 1.1,
+    0: 1.0,
+    [-1]: 0.9,
+    [-2]: 0.8,
+    [-3]: 0.75,
+    [-4]: 0.67,
+    [-5]: 0.5,
+    [-6]: 0.33,
+    [-7]: 0.25,
+  };
 }
