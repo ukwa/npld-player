@@ -9,7 +9,6 @@ require('dotenv').config();
 module.exports = [
   // Make env variables available with `process.env.ENV_VARIABLE`
   new webpack.EnvironmentPlugin([
-    'NPLD_PLAYER_PROTOCOL',
     'NPLD_PLAYER_INITIAL_WEB_ADDRESS',
     'NPLD_PLAYER_ENABLE_PRINT',
   ]),
