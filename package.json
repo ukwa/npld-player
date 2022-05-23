@@ -25,16 +25,6 @@
           }
         ]
       },
-      "electronRebuildConfig": {
-        "protocols": [
-          {
-            "name": "npld-viewer",
-            "schemes": [
-              "npld-viewer"
-            ]
-          }
-        ]
-      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
