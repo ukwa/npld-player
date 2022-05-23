@@ -9,7 +9,6 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 const isDev = !app.isPackaged;
 const customProtocol = 'npld-viewer';
 let mainWindow: BrowserWindow = null;
-let externalLinkUrl: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -18,6 +17,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Open links in browser with app
+// https://www.electronjs.org/docs/v14-x-y/tutorial/launch-app-from-url-in-another-app
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
     app.setAsDefaultProtocolClient(customProtocol, process.execPath, [
@@ -116,12 +116,13 @@ if (!gotTheLock) {
     focusWindow();
   });
 
-  app.on('open-url', function (event, url) {
+  app.on('open-url', function (event, arg) {
     event.preventDefault();
-    externalLinkUrl = url;
-    console.log('open-url:', externalLinkUrl);
-
     focusWindow();
+
+    // Send the renderer the URL for webview to load
+    const url = arg.replace('npld-viewer://', '');
+    mainWindow.webContents.send('open-url-in-webview', url);
   });
 
   // Quit when all windows are closed, except on macOS. There, it's common
