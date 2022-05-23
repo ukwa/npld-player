@@ -12,4 +12,4 @@ import './index.css';
 import './npld-player';
 
 // Set the base path to the folder you copied Shoelace's assets to
-setBasePath('public/shoelace');
+setBasePath('./public/shoelace');
