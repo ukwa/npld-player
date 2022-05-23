@@ -18,9 +18,20 @@
       "packagerConfig": {
         "protocols": [
           {
-            "protocol": "npld-viewer",
             "name": "npld-viewer",
-            "schemes": "npld-viewer"
+            "schemes": [
+              "npld-viewer"
+            ]
+          }
+        ]
+      },
+      "electronRebuildConfig": {
+        "protocols": [
+          {
+            "name": "npld-viewer",
+            "schemes": [
+              "npld-viewer"
+            ]
           }
         ]
       },
@@ -39,7 +50,11 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "mimeType": [
+              "x-scheme-handler/npld-viewer"
+            ]
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
