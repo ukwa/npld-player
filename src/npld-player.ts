@@ -81,8 +81,8 @@ export class NPLDPlayer extends LitElement {
     }
   `;
 
-  @property({ type: String })
-  webviewUrl: string = NPLDPlayer.initialWebAddress;
+  @state()
+  private webviewUrl: string = NPLDPlayer.initialWebAddress;
 
   @state()
   private isReady = false;
