@@ -13,6 +13,8 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+app.setAsDefaultProtocolClient(process.env.NPLD_PLAYER_PROTOCOL);
+
 const createWindow = (): void => {
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     // Define content security policy
