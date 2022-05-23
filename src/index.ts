@@ -9,6 +9,7 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 const isDev = !app.isPackaged;
 const customProtocol = 'npld-viewer';
 let mainWindow: BrowserWindow = null;
+let webview: any = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -83,6 +84,10 @@ const createWindow = (): void => {
     mainWindow.show();
   });
 
+  mainWindow.webContents.once('did-attach-webview', (event, webContents) => {
+    webview = webContents;
+  });
+
   if (isDev) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools({
@@ -122,9 +127,11 @@ if (!gotTheLock) {
 
     // Load URL in webview
     const url = arg.replace('npld-viewer://', '');
-    const webview = webContents.getFocusedWebContents();
-
-    webview.loadURL(url);
+    if (webview) {
+      webview.loadURL(url);
+    } else {
+      console.debug('Webview not available');
+    }
   });
 
   // Quit when all windows are closed, except on macOS. There, it's common
