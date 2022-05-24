@@ -21,7 +21,10 @@ module.exports = [
           __dirname,
           'node_modules/@shoelace-style/shoelace/dist/assets'
         ),
-        to: path.resolve(__dirname, '.webpack/renderer/public/shoelace/assets'),
+        to: path.resolve(
+          __dirname,
+          '.webpack/renderer/main_window/public/shoelace/assets'
+        ),
       },
     ],
   }),
