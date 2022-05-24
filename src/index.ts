@@ -31,19 +31,21 @@ const createWindow = (): void => {
       ].join(';');
     }
 
-    // Block downloads
-    // TODO show user feedback?
-    session.defaultSession.on('will-download', (event, item, webContents) => {
-      event.preventDefault();
-      console.log(`Download Blocked for ${item.getURL()} - (${item.getMimeType()})`);
-    });
-
     callback({
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': csp,
       },
     });
+  });
+
+  // Block downloads
+  // TODO show user feedback?
+  session.defaultSession.on('will-download', (event, item, webContents) => {
+    event.preventDefault();
+    console.log(
+      `Download Blocked for ${item.getURL()} - (${item.getMimeType()})`
+    );
   });
 
   // Create the browser window.
