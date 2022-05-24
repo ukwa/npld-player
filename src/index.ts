@@ -88,9 +88,23 @@ const createWindow = (): void => {
   mainWindow.webContents.once('did-attach-webview', (event, webContents) => {
     webview = webContents;
 
+    const isInAppUrl = (url: string) =>
+      url.startsWith(`npld-viewer://${process.env.NPLD_PLAYER_PREFIX}`);
+
+    webview.setWindowOpenHandler(({ url }) => {
+      if (isInAppUrl(url)) {
+        // Load in current webview window
+        webview.loadURL(url);
+      } else {
+        // Open in default browser
+        shell.openExternal(url);
+      }
+      return { action: 'deny' };
+    });
+
     webview.on('will-navigate', (event, url) => {
       // Open links without prefix in default browser
-      if (!url.startsWith(`npld-viewer://${process.env.NPLD_PLAYER_PREFIX}`)) {
+      if (!isInAppUrl(url)) {
         event.preventDefault();
         shell.openExternal(url);
       }

@@ -188,6 +188,7 @@ export class NPLDPlayer extends LitElement {
       <main>
         <webview
           src=${this.webviewUrl}
+          allowpopups
           @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
