@@ -14,6 +14,16 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = (): void => {
+  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    // Add auth token to every request
+    details.requestHeaders[process.env.NPLD_PLAYER_AUTH_TOKEN_NAME] =
+      process.env.NPLD_PLAYER_AUTH_TOKEN_VALUE;
+
+    callback({
+      requestHeaders: details.requestHeaders,
+    });
+  });
+
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     // Define content security policy
     let csp = [
