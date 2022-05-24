@@ -6,11 +6,6 @@ export class NPLDPlayer extends LitElement {
   static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS;
 
   static styles = css`
-    :host {
-      height: 100vh;
-      width: 100vw;
-    }
-
     header {
       display: flex;
       align-items: center;
@@ -73,11 +68,16 @@ export class NPLDPlayer extends LitElement {
       font-size: 1.25rem;
     }
 
-    webview {
-      display: inline-flex;
-      background: #eee;
+    main {
       height: calc(100vh - 41px); /* app height - app bar height */
       width: 100vw;
+      overflow: hidden;
+    }
+
+    webview {
+      background: #eee;
+      height: 100%;
+      width: 100%;
     }
   `;
 
