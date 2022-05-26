@@ -192,7 +192,7 @@ export class NPLDPlayer extends LitElement {
           @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
           @did-stop-loading=${() => (this.isLoading = false)}
-          @did-finish-loading=${() => (this.isLoading = false)}
+          @did-finish-load=${() => (this.isLoading = false)}
           @did-fail-load=${() => (this.isLoading = false)}
           @did-navigate=${this.onNavigate}
         ></webview>
