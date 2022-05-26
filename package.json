@@ -15,7 +15,16 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "protocols": [
+          {
+            "name": "npld-viewer",
+            "schemes": [
+              "npld-viewer"
+            ]
+          }
+        ]
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -31,7 +40,11 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "mimeType": [
+              "x-scheme-handler/npld-viewer"
+            ]
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
