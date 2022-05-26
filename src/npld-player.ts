@@ -190,10 +190,8 @@ export class NPLDPlayer extends LitElement {
           src=${NPLDPlayer.initialWebAddress}
           allowpopups
           @dom-ready=${this.onWebviewReady}
-          @did-start-loading=${() => (this.isLoading = true)}
-          @did-stop-loading=${() => (this.isLoading = false)}
-          @did-finish-load=${() => (this.isLoading = false)}
-          @did-fail-load=${() => (this.isLoading = false)}
+          @did-start-loading=${this.onLoadStart}
+          @did-stop-loading=${this.onLoadEnd}
           @did-navigate=${this.onNavigate}
         ></webview>
       </main>
@@ -221,11 +219,31 @@ export class NPLDPlayer extends LitElement {
     `;
   }
 
+  /**
+   * Callback when the spinner of the tab starts spinning.
+   */
+  private onLoadStart() {
+    this.isLoading = true;
+  }
+
+  /**
+   * Callback when the spinner of the tab stops spinning.
+   */
+  private onLoadEnd() {
+    this.isLoading = false;
+  }
+
+  /**
+   * Callback when document in the webview is loaded.
+   */
   private onWebviewReady() {
     this.zoomFactor = this.webview.getZoomFactor();
     this.isReady = true;
   }
 
+  /**
+   * Callback when a navigation is done.
+   */
   private onNavigate() {
     this.webviewUrlDisplay = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
