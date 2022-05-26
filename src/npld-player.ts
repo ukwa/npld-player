@@ -82,7 +82,7 @@ export class NPLDPlayer extends LitElement {
   `;
 
   @state()
-  private webviewUrl: string = NPLDPlayer.initialWebAddress;
+  private webviewUrlDisplay: string = NPLDPlayer.initialWebAddress;
 
   @state()
   private isReady = false;
@@ -187,7 +187,7 @@ export class NPLDPlayer extends LitElement {
     return html`
       <main>
         <webview
-          src=${this.webviewUrl}
+          src=${NPLDPlayer.initialWebAddress}
           allowpopups
           @dom-ready=${this.onWebviewReady}
           @did-start-loading=${() => (this.isLoading = true)}
@@ -204,12 +204,12 @@ export class NPLDPlayer extends LitElement {
     let url: URL;
 
     try {
-      url = new URL(this.webviewUrl);
+      url = new URL(this.webviewUrlDisplay);
     } catch {
       return '';
     }
 
-    const [prefix, suffix] = this.webviewUrl.split(url.hostname);
+    const [prefix, suffix] = this.webviewUrlDisplay.split(url.hostname);
 
     return html`
       <div class="address-field" tabindex="0">
@@ -227,7 +227,7 @@ export class NPLDPlayer extends LitElement {
   }
 
   private onNavigate() {
-    this.webviewUrl = this.webview.getURL();
+    this.webviewUrlDisplay = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
     this.canGoForward = this.webview.canGoForward();
   }
