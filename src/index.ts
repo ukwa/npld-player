@@ -9,8 +9,10 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 const isDev = !app.isPackaged;
 const customProtocol = 'npld-viewer';
+const customScheme = customProtocol + "://";
 let mainWindow: BrowserWindow = null;
 let webview: WebContents = null;
+let startUrl: string = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -20,7 +22,10 @@ if (require('electron-squirrel-startup')) {
 
 // Open links in browser with app
 // https://www.electronjs.org/docs/v14-x-y/tutorial/launch-app-from-url-in-another-app
-if (process.defaultApp) {
+
+if (isDev && process.platform === 'win32') {
+  // correctly handle in dev mode in windows
+  // per: https://shipshape.io/blog/launch-electron-app-from-browser-custom-protocol/
   if (process.argv.length >= 2) {
     app.setAsDefaultProtocolClient(customProtocol, process.execPath, [
       path.resolve(process.argv[1]),
@@ -31,7 +36,11 @@ if (process.defaultApp) {
 }
 
 const createWindow = (): void => {
-  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+
+  // content session used by the <webview>
+  const contentSession = session.fromPartition("content");
+
+  contentSession.webRequest.onBeforeSendHeaders((details, callback) => {
     // Add auth token to every request
     details.requestHeaders[process.env.NPLD_PLAYER_AUTH_TOKEN_NAME] =
       process.env.NPLD_PLAYER_AUTH_TOKEN_VALUE;
@@ -41,34 +50,37 @@ const createWindow = (): void => {
     });
   });
 
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    // Define content security policy
-    let csp = [
-      "default-src 'self'",
-      "script-src 'self'",
-      "style-src 'self' 'unsafe-inline'",
-    ].join(';');
+  // TODO: this is for extra security of the main app, right?
+  // should we just set it as <meta> tag in the main index.html instead?
+  //
+  // session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+  //   // Define content security policy
+  //   let csp = [
+  //     "default-src 'self'",
+  //     "script-src 'self'",
+  //     "style-src 'self' 'unsafe-inline'",
+  //   ].join(';');
 
-    if (isDev) {
-      csp = [
-        "default-src 'self' 'unsafe-inline' data:",
-        // Allow unsafe-eval for Webpack
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
-        "style-src 'self' 'unsafe-inline'",
-      ].join(';');
-    }
+  //   if (isDev) {
+  //     csp = [
+  //       "default-src 'self' 'unsafe-inline' data:",
+  //       // Allow unsafe-eval for Webpack
+  //       "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
+  //       "style-src 'self' 'unsafe-inline'",
+  //     ].join(';');
+  //   }
 
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': csp,
-      },
-    });
-  });
+  //   callback({
+  //     responseHeaders: {
+  //       ...details.responseHeaders,
+  //       //'Content-Security-Policy': csp,
+  //     },
+  //   });
+  // });
 
   // Block downloads
   // TODO show user feedback?
-  session.defaultSession.on('will-download', (event, item, webContents) => {
+  contentSession.on('will-download', (event, item, webContents) => {
     event.preventDefault();
     console.log(
       `Download Blocked for ${item.getURL()} - (${item.getMimeType()})`
@@ -96,11 +108,23 @@ const createWindow = (): void => {
     mainWindow.show();
   });
 
+  mainWindow.webContents.once('will-attach-webview', (event, webPreferences, params) => {
+    if (startUrl) {
+      params.src = startUrl;
+      startUrl = null;
+    }
+  });
+
   mainWindow.webContents.once('did-attach-webview', (event, webContents) => {
     webview = webContents;
 
+    //if (startUrl) {
+    //  webview.loadURL(startUrl);
+    //  startUrl = null;
+    //}
+
     const isInAppUrl = (url: string) =>
-      url.startsWith(`npld-viewer://${process.env.NPLD_PLAYER_PREFIX}`);
+      url.startsWith(`${customScheme}${process.env.NPLD_PLAYER_PREFIX}`);
 
     webview.setWindowOpenHandler(({ url }) => {
       if (isInAppUrl(url)) {
@@ -130,8 +154,26 @@ const createWindow = (): void => {
   }
 };
 
+// parse open url and set directly or save for when webview is available
+const setOpenUrl = (arg: string) => {
+  // Set URL to load from player prefix + custom protocol url
+  const url = process.env.NPLD_PLAYER_PREFIX + arg.replace(customScheme, '');
+
+  if (webview) {
+    webview.loadURL(url);
+  } else {
+    // webview not yet loaded, save url and open on attach
+    startUrl = url;
+  }
+};
+
 const focusWindow = () => {
-  if (!mainWindow) return;
+  if (!mainWindow) {
+    if (!app.isReady()) {
+      return;
+    }
+    createWindow();
+  }
 
   if (mainWindow.isMinimized()) mainWindow.restore();
   mainWindow.focus();
@@ -150,31 +192,37 @@ if (!gotTheLock) {
     createWindow();
   });
 
-  app.on('second-instance', () => {
-    // Someone tried to run a second instance, we should focus our window.
+  app.on('second-instance', (e, argv) => {
+    // Handle opening link in running app
+
+    // per: https://shipshape.io/blog/launch-electron-app-from-browser-custom-protocol/
+    if (process.platform !== 'darwin') {
+      // Find the arg that is our custom protocol url and store it
+      setOpenUrl(argv.find((arg) => arg.startsWith(customScheme)));
+    }
+
     focusWindow();
   });
 
   app.on('open-url', function (event, arg) {
     event.preventDefault();
-    focusWindow();
 
-    // Load URL in webview
-    const url = arg.replace('npld-viewer://', '');
-    if (webview) {
-      webview.loadURL(url);
-    } else {
-      console.debug('Webview not available');
-    }
+    setOpenUrl(arg);
+
+    focusWindow();
   });
 
-  // Quit when all windows are closed, except on macOS. There, it's common
-  // for applications and their menu bar to stay active until the user quits
-  // explicitly with Cmd + Q.
+  // Quit when all windows are closed
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    // TODO: decide if also want to keep app open on macOS?
+    // seems like better to close, unless supporting multiple windows?
+
+    //if (process.platform !== 'darwin') {
       app.quit();
-    }
+    //} else {
+    //  mainWindow = null;
+    //  webview = null;
+    //}
   });
 
   app.on('activate', () => {
