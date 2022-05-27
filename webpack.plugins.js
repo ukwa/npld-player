@@ -14,6 +14,7 @@ module.exports = [
     'NPLD_PLAYER_AUTH_TOKEN_NAME',
     'NPLD_PLAYER_AUTH_TOKEN_VALUE',
     'NPLD_PLAYER_ENABLE_PRINT',
+    'NPLD_PLAYER_ALLOW_DEVTOOLS'
   ]),
   new ForkTsCheckerWebpackPlugin(),
   new CopyPlugin({

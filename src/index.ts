@@ -87,6 +87,10 @@ const createWindow = (): void => {
     );
   });
 
+  const allowDevTools = () => {
+    return isDev || process.env.NPLD_PLAYER_ALLOW_DEVTOOLS === "true" || process.env.NPLD_PLAYER_ALLOW_DEVTOOLS === "1";
+  };
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false, // show once the renderer process has rendered
@@ -94,7 +98,7 @@ const createWindow = (): void => {
     width: 800,
     webPreferences: {
       webviewTag: true, // Enable <webview>
-      devTools: isDev,
+      devTools: allowDevTools(),
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
@@ -122,6 +126,10 @@ const createWindow = (): void => {
     //  webview.loadURL(startUrl);
     //  startUrl = null;
     //}
+
+    if (allowDevTools()) {
+      webContents.openDevTools();
+    }
 
     const isInAppUrl = (url: string) =>
       url.startsWith(`${customScheme}${process.env.NPLD_PLAYER_PREFIX}`);
