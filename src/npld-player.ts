@@ -3,7 +3,7 @@ import { customElement, query, state, property } from 'lit/decorators.js';
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
-  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS;
+  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
 
   static styles = css`
     header {
