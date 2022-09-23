@@ -132,7 +132,7 @@ const createWindow = (): void => {
     }
 
     const isInAppUrl = (url: string) =>
-      url.startsWith(`${customScheme}${process.env.NPLD_PLAYER_PREFIX}`);
+      url.startsWith(process.env.NPLD_PLAYER_PREFIX);
 
     webview.setWindowOpenHandler(({ url }) => {
       if (isInAppUrl(url)) {
