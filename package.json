@@ -73,6 +73,17 @@
             }
           }
         ]
+      ],
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "ukwa",
+              "name": "npld-player-builds"
+            }
+          }
+        }
       ]
     }
   },
