@@ -3,6 +3,8 @@
   "productName": "npld-player",
   "version": "1.0.0-alpha",
   "main": ".webpack/main",
+  "description": "NPLD Secured Browser Application",
+  "productDescription": "Secured browser application for accessing NPLD content in Legal Deposit Library reading rooms",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
