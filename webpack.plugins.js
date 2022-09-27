@@ -9,8 +9,12 @@ require('dotenv').config();
 module.exports = [
   // Make env variables available with `process.env.ENV_VARIABLE`
   new webpack.EnvironmentPlugin([
+    'NPLD_PLAYER_PREFIX',
     'NPLD_PLAYER_INITIAL_WEB_ADDRESS',
+    'NPLD_PLAYER_AUTH_TOKEN_NAME',
+    'NPLD_PLAYER_AUTH_TOKEN_VALUE',
     'NPLD_PLAYER_ENABLE_PRINT',
+    'NPLD_PLAYER_ALLOW_DEVTOOLS'
   ]),
   new ForkTsCheckerWebpackPlugin(),
   new CopyPlugin({

@@ -3,7 +3,7 @@ import { customElement, query, state, property } from 'lit/decorators.js';
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
-  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS;
+  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
   static isPrintEnabled = process.env.NPLD_PLAYER_ENABLE_PRINT === 'true';
 
   static styles = css`
@@ -81,6 +81,9 @@ export class NPLDPlayer extends LitElement {
       width: 100%;
     }
   `;
+
+  @state()
+  private webviewUrlDisplay: string = NPLDPlayer.initialWebAddress;
 
   @state()
   private isReady = false;
@@ -188,11 +191,11 @@ export class NPLDPlayer extends LitElement {
       <main>
         <webview
           src=${NPLDPlayer.initialWebAddress}
+          allowpopups
+          partition="content"
           @dom-ready=${this.onWebviewReady}
-          @did-start-loading=${() => (this.isLoading = true)}
-          @did-stop-loading=${() => (this.isLoading = false)}
-          @did-finish-loading=${() => (this.isLoading = false)}
-          @did-fail-load=${() => (this.isLoading = false)}
+          @did-start-loading=${this.onLoadStart}
+          @did-stop-loading=${this.onLoadEnd}
           @did-navigate=${this.onNavigate}
         ></webview>
       </main>
@@ -203,12 +206,12 @@ export class NPLDPlayer extends LitElement {
     let url: URL;
 
     try {
-      url = new URL(NPLDPlayer.initialWebAddress);
+      url = new URL(this.webviewUrlDisplay);
     } catch {
       return '';
     }
 
-    const [prefix, suffix] = NPLDPlayer.initialWebAddress.split(url.hostname);
+    const [prefix, suffix] = this.webviewUrlDisplay.split(url.hostname);
 
     return html`
       <div class="address-field" tabindex="0">
@@ -220,13 +223,33 @@ export class NPLDPlayer extends LitElement {
     `;
   }
 
+  /**
+   * Callback when the spinner of the tab starts spinning.
+   */
+  private onLoadStart() {
+    this.isLoading = true;
+  }
+
+  /**
+   * Callback when the spinner of the tab stops spinning.
+   */
+  private onLoadEnd() {
+    this.isLoading = false;
+  }
+
+  /**
+   * Callback when document in the webview is loaded.
+   */
   private onWebviewReady() {
     this.zoomFactor = this.webview.getZoomFactor();
     this.isReady = true;
   }
 
+  /**
+   * Callback when a navigation is done.
+   */
   private onNavigate() {
-    NPLDPlayer.initialWebAddress = this.webview.getURL();
+    this.webviewUrlDisplay = this.webview.getURL();
     this.canGoBack = this.webview.canGoBack();
     this.canGoForward = this.webview.canGoForward();
   }
