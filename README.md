@@ -26,7 +26,7 @@ The `npm version` system handles versions and git tags.  With everything committ
 npm version prerelease
 ```
 
-Updates the `...alpha.X` number. Other options are `major/minor/patch`.  Then push the tags, and go to the  https://github.com/ukwa/npld-player-builds to initiate a binary build. This creates a draft release that should then be published as a pre-release or full release as appropriate. After that, people can download the new version.
+Updates the `...alpha.X` number. Other options are `major/minor/patch`.  Then push the tags, and go to the [relevant Actions workflow](https://github.com/ukwa/npld-player-builds/actions/workflows/build.yaml) to initiate a binary build. This creates a draft release that should then be published as a pre-release or full release as appropriate. After that, people can download the new version.
 
 ## Deployment
 
