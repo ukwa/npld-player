@@ -1,0 +1,16 @@
+name: Trigger Package Builds for Tags
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_REPO_TOKEN }}
+        run: |
+          gh workflow run build.yml --repo ukwa/npld-player-builds --ref main

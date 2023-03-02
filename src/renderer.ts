@@ -5,7 +5,7 @@
  *
  * https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes
  */
-import '@shoelace-style/shoelace/dist/themes/light.css';
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import './index.css';
