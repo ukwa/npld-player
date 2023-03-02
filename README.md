@@ -18,6 +18,16 @@ Install and run app locally:
 yarn && yarn start
 ```
 
+### Version management
+
+The `npm version` system handles versions and git tags.  With everything committed, e.g.
+
+```
+npm version prerelease
+```
+
+Updates the `...alpha.X` number. Other options are `major/minor/patch`.  Then push the tags, and go to the  https://github.com/ukwa/npld-player-builds to initiate a binary build. This creates a draft release that should then be published as a pre-release or full release as appropriate. After that, people can download the new version.
+
 ## Deployment
 
 This product is only intended to be deployed by Legal Deposit libraries.  Binaries are not publicly available, but staff can get in touch with UKWA staff to be given access to the https://github.com/ukwa/npld-player-builds project where those binaries can be accessed.
