@@ -2,9 +2,11 @@ name: Trigger Package Builds for Tags
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
+  # Commented out as using a build token like this seems brittle.
+  # Manual builds are fine for now.
+  #push:
+  #  tags:
+  #    - '*'
 
 jobs:
   trigger-build:
