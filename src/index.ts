@@ -7,12 +7,17 @@ import type { WebContents } from 'electron';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
+// Allow the command line to override settings:
+const NPLD_PLAYER_HOMEPAGE = app.commandLine.getSwitchValue("homepage") || process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
+const NPLD_PLAYER_PREFIX = app.commandLine.getSwitchValue("prefix") || process.env.NPLD_PLAYER_PREFIX;
+
+// Set other parameters/constants:
 const isDev = !app.isPackaged;
 const customProtocol = 'npld-viewer';
 const customScheme = customProtocol + "://";
 let mainWindow: BrowserWindow = null;
 let webview: WebContents = null;
-let startUrl: string = null;
+let startUrl: string = NPLD_PLAYER_HOMEPAGE;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -132,7 +137,7 @@ const createWindow = (): void => {
     }
 
     const isInAppUrl = (url: string) =>
-      url.startsWith(process.env.NPLD_PLAYER_PREFIX);
+      url.startsWith(NPLD_PLAYER_PREFIX);
 
     webview.setWindowOpenHandler(({ url }) => {
       if (isInAppUrl(url)) {
@@ -165,7 +170,7 @@ const createWindow = (): void => {
 // parse open url and set directly or save for when webview is available
 const setOpenUrl = (arg: string) => {
   // Set URL to load from player prefix + custom protocol url
-  const url = process.env.NPLD_PLAYER_PREFIX + arg.replace(customScheme, '');
+  const url = NPLD_PLAYER_PREFIX + arg.replace(customScheme, '');
 
   if (webview) {
     webview.loadURL(url);

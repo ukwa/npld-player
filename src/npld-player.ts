@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state, property } from 'lit/decorators.js';
 
+const HOMEPAGE = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
+
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
-  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
+  static initialWebAddress = HOMEPAGE;
 
   static styles = css`
     header {
