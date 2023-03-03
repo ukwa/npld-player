@@ -131,6 +131,7 @@ const createWindow = (): void => {
   mainWindow.webContents.once('did-attach-webview', (event, webContents) => {
     webview = webContents;
 
+    // ANJ: Why was this here?
     //if (startUrl) {
     //  webview.loadURL(startUrl);
     //  startUrl = null;
@@ -175,6 +176,7 @@ const createWindow = (): void => {
 const setOpenUrl = (arg: string) => {
   // Set URL to load from player prefix + custom protocol url
   const url = NPLD_PLAYER_PREFIX + arg.replace(customScheme, '');
+  console.log("setOpenUrl: " + url);
 
   if (webview) {
     webview.loadURL(url);
@@ -207,46 +209,55 @@ if (!gotTheLock) {
   // Some APIs can only be used after this event occurs.
   app.whenReady().then(() => {
     createWindow();
+
+    // Handle being passed a URL on startup...
+    console.log("Startup with process.argv "+ process.argv);
+   
+    const urlArg = process.argv.find((arg) => arg.startsWith(customScheme));
+    if (process.platform !== 'darwin' && urlArg) setOpenUrl(urlArg);
+
+    app.on('activate', () => {
+      // On OS X it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
+  
+    app.on('second-instance', (e, argv) => {
+      // Handle opening link in running app
+      console.log("Got second-instance event. " + argv);
+
+      // per: https://shipshape.io/blog/launch-electron-app-from-browser-custom-protocol/
+      if (process.platform !== 'darwin') {
+        // Find the arg that is our custom protocol url and store it
+        setOpenUrl(argv.find((arg) => arg.startsWith(customScheme)));
+      }
+
+      focusWindow();
+    });
+
+    app.on('open-url', function (event, arg) {
+      event.preventDefault();
+      console.log("Got open-url event. " + arg);
+      setOpenUrl(arg);
+
+      focusWindow();
+    });
+
+    // Quit when all windows are closed
+    app.on('window-all-closed', () => {
+      // TODO: decide if also want to keep app open on macOS?
+      // seems like better to close, unless supporting multiple windows?
+
+      //if (process.platform !== 'darwin') {
+        app.quit();
+      //} else {
+      //  mainWindow = null;
+      //  webview = null;
+      //}
+    });
+
   });
 
-  app.on('second-instance', (e, argv) => {
-    // Handle opening link in running app
-
-    // per: https://shipshape.io/blog/launch-electron-app-from-browser-custom-protocol/
-    if (process.platform !== 'darwin') {
-      // Find the arg that is our custom protocol url and store it
-      setOpenUrl(argv.find((arg) => arg.startsWith(customScheme)));
-    }
-
-    focusWindow();
-  });
-
-  app.on('open-url', function (event, arg) {
-    event.preventDefault();
-
-    setOpenUrl(arg);
-
-    focusWindow();
-  });
-
-  // Quit when all windows are closed
-  app.on('window-all-closed', () => {
-    // TODO: decide if also want to keep app open on macOS?
-    // seems like better to close, unless supporting multiple windows?
-
-    //if (process.platform !== 'darwin') {
-      app.quit();
-    //} else {
-    //  mainWindow = null;
-    //  webview = null;
-    //}
-  });
-
-  app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
 }
