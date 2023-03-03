@@ -49,7 +49,10 @@
           "config": {
             "mimeType": [
               "x-scheme-handler/npld-viewer"
-            ]
+            ],
+            "options": {
+              "icon": "icons/ld-player.png"
+            }
           }
         },
         {
