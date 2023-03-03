@@ -100,11 +100,15 @@ const createWindow = (): void => {
     return isDev || process.env.NPLD_PLAYER_ALLOW_DEVTOOLS === "true" || process.env.NPLD_PLAYER_ALLOW_DEVTOOLS === "1";
   };
 
+  // Icon location:
+  const iconFilename = path.resolve(__dirname, '..', 'icons', 'ld-player.png');
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: false, // show once the renderer process has rendered
     height: 600,
     width: 800,
+    icon: iconFilename,
     webPreferences: {
       webviewTag: true, // Enable <webview>
       devTools: allowDevTools(),

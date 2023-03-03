@@ -31,6 +31,17 @@ module.exports = [
           '.webpack/renderer/main_window/public/shoelace/assets'
         ),
       },
+      // Copy icons too
+      {
+        from: path.resolve(
+          __dirname,
+          'icons'
+        ),
+        to: path.resolve(
+          __dirname,
+          '.webpack/icons'
+        ),
+      }
     ],
   }),
 ];

@@ -19,7 +19,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "icons/ld-player",
+        "icon": "src/assets/icons/ld-player",
         "protocols": [
           {
             "name": "npld-viewer",
