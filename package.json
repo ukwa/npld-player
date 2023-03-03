@@ -19,6 +19,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
+        "icon": "icons/ld-player",
         "protocols": [
           {
             "name": "npld-viewer",
@@ -32,7 +33,9 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "npld_player"
+            "name": "npld_player",
+            "authors": "The British Library",
+            "description": "A viewer application for accessing Non-Print Legal Deposit items in reading rooms."
           }
         },
         {
