@@ -38,6 +38,12 @@ convert icons/ld-player.png -define icon:auto-resize=256,128,64,48,32,16 icons/l
 
 This product is only intended to be deployed by Legal Deposit libraries.  Binaries are not publicly available, but staff can get in touch with UKWA staff to be given access to the https://github.com/ukwa/npld-player-builds project where those binaries can be accessed.
 
+### Configuration Management
+
+Note that the values of the configuration variables are are baked-in at build time using the [EnvironmentPlugin](https://webpack.js.org/plugins/environment-plugin/). This is necessary for the authentication token as we don't want it to be accessible as an environment variable when deployed in reading rooms.
+
+Where needed, environment variables can be overridden at runtime, but note that each variable needs to be specified explicitly in the code in order to allow this to happen.
+
 ### Installation
 
 After the installation, it is necessary to set up some environment variables so the Player knows which service to talk to.  For example, for the BL Staff Alpha service, we use the `blstaff-alpha.ldls.org.uk` domain.  To set up the NPLD Player to use this domain, set:
