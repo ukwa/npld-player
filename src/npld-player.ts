@@ -5,8 +5,8 @@ const HOMEPAGE = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD
 
 @customElement('npld-player')
 export class NPLDPlayer extends LitElement {
-  static initialWebAddress = HOMEPAGE;
-
+  static initialWebAddress = process.env.NPLD_PLAYER_INITIAL_WEB_ADDRESS || process.env.NPLD_PLAYER_PREFIX;
+  static isPrintEnabled = process.env.NPLD_PLAYER_ENABLE_PRINT === 'true';
   static styles = css`
     header {
       display: flex;
@@ -176,11 +176,13 @@ export class NPLDPlayer extends LitElement {
           ?disabled=${NPLDPlayer.zoomFactorMap[this.zoomLevel - 1] ===
           undefined}
         ></sl-icon-button>
-        <sl-icon-button
-          name="printer"
-          label="Print"
-          @click=${this.printPage}
-        ></sl-icon-button>
+        ${NPLDPlayer.isPrintEnabled
+          ? html`<sl-icon-button
+              name="printer"
+              label="Print"
+              @click=${this.printPage}
+            ></sl-icon-button>`
+          : ''}
       </div>
     </header>`;
   }
@@ -297,8 +299,16 @@ export class NPLDPlayer extends LitElement {
     }
   }
 
-  private printPage() {
-    console.log('TODO printPage');
+  // https://www.electronjs.org/docs/latest/api/webview-tag#webviewprintoptions
+  private async printPage() {
+    try {
+      // const res: Uint8Array = await this.webview.printToPDF({});
+      // console.log(res);
+
+      await this.webview.print();
+    } catch (e) {
+      console.debug(e);
+    }
   }
 
   // Map zoom level to zoom factor
