@@ -2,6 +2,21 @@
 
 Secured browser for accessing NPLD content in Legal Deposit Library reading rooms.
 
+## Deployment
+
+The steps to generate a new, tagged npld-player build are:
+
+* Copy ```sample.env``` to ```.env``` and configure the environment variables
+* ``` yarn && yarn start ```
+ * This pulls in lots of dependencies and builds packages
+* ``` npm version prerelease ```
+* Log into https://github.com/ukiwa/npld-player-builds
+
+
+
+
+
+
 ## Development
 
 ### Quickstart
