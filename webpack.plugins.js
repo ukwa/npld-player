@@ -7,8 +7,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 require('dotenv').config();
 
 module.exports = [
-  // Make env variables available with `process.env.ENV_VARIABLE`
+  // Make compile-time env variables available with `process.env.ENV_VARIABLE`
   new webpack.EnvironmentPlugin([
+    // Avoid hardcoding these configuration parameters:
     'NPLD_PLAYER_PREFIX',
     'NPLD_PLAYER_INITIAL_WEB_ADDRESS',
     'NPLD_PLAYER_AUTH_TOKEN_NAME',
@@ -30,6 +31,17 @@ module.exports = [
           '.webpack/renderer/main_window/public/shoelace/assets'
         ),
       },
+      // Copy icons too
+      {
+        from: path.resolve(
+          __dirname,
+          'icons'
+        ),
+        to: path.resolve(
+          __dirname,
+          '.webpack/icons'
+        ),
+      }
     ],
   }),
 ];
