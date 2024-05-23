@@ -2,41 +2,35 @@
 
 Secured browser for accessing NPLD content in Legal Deposit Library reading rooms.
 
-## Development
+## Deployment
 
-### Quickstart
+The steps to generate a new, tagged npld-player build are:
 
-Copy environment variables:
+* On a machine with X11 running (as DISPLAY needs to be set) and with this repo up to date, fully commited etc.,
+  * Copy ```sample.env``` to ```.env``` and configure the environment variables
 
-```sh
-cp sample.env .env
-```
+  * ``` yarn && yarn start ```
+    * This pulls in lots of dependencies and builds packages
 
-Install and run app locally:
+  * ``` npm version prerelease ```
+    * This updates the code release number
 
-```sh
-yarn && yarn start
-```
+* Log into https://github.com/ukwa/npld-player
+  * Create a new release tag
 
-### Version management
-
-The `npm version` system handles versions and git tags.  With everything committed, e.g.
-
-```
-npm version prerelease
-```
-
-Updates the `...alpha.X` number. Other options are `major/minor/patch`.  Then push the tags, and go to the [relevant Actions workflow](https://github.com/ukwa/npld-player-builds/actions/workflows/build.yaml) to initiate a binary build. This creates a draft release that should then be published as a pre-release or full release as appropriate. After that, people can download the new version.
-
-### Icon generation
-
-```
-convert icons/ld-player.png -define icon:auto-resize=256,128,64,48,32,16 icons/ld-player.ico
-```
+* Log into https://github.com/ukwa/npld-player-builds
+  * Go to github Actions Workflows and instigate 'Build' from main branch, which should result in a new npld-player build
 
 ## Deployment
 
 This product is only intended to be deployed by Legal Deposit libraries.  Binaries are not publicly available, but staff can get in touch with UKWA staff to be given access to the https://github.com/ukwa/npld-player-builds project where those binaries can be accessed.
+
+
+
+
+### Icon generation
+
+``` convert icons/ld-player.png -define icon:auto-resize=256,128,64,48,32,16 icons/ld-player.ico ```
 
 ### Configuration Management
 
