@@ -13,7 +13,10 @@ The steps to generate a new, tagged npld-player build are:
     * This pulls in lots of dependencies and builds packages
 
   * ``` npm version prerelease ```
-    * This updates the code release number
+    * This increments the code number to a new release version
+
+  * ``` git push ```
+    * This pushes the release version and the corresponding tag/s
 
 * Log into https://github.com/ukwa/npld-player
   * Create a new release tag
