@@ -13,7 +13,7 @@ The steps to generate a new, tagged npld-player build are:
     * This pulls in lots of dependencies and builds packages
 
   * ``` npm version prerelease ```
-    * This increments the code number to a new release version
+    * This increments the code number to a new release version and updates the `package.json` file with the build details
 
   * ``` git push ```
     * This pushes the release version and the corresponding tag/s
