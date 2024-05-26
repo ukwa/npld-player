@@ -1,7 +1,7 @@
 {
   "name": "npld-player",
   "productName": "npld-player",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.10",
   "main": ".webpack/main",
   "author": "UK Web Archive <info@www.webarchive.org.uk> (https://www.webarchive.org.uk/)",
   "description": "NPLD Secured Browser Application",
