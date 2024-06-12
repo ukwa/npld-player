@@ -7,6 +7,8 @@ Secured browser for accessing NPLD content in Legal Deposit Library reading room
 The steps to generate a new, tagged npld-player build are:
 
 * On a machine with X11 running (as DISPLAY needs to be set) and with this repo up to date, fully commited etc.,
+  * Clone the ```npld-player``` repo to ensure no residual content from previous usage
+
   * Copy ```sample.env``` to ```.env``` and configure the environment variables
 
   * ``` yarn && yarn start ```
