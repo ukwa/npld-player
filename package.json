@@ -103,7 +103,7 @@
     "@electron-forge/plugin-webpack": "7.5.0",
     "@electron-forge/publisher-github": "^7.5.0",
     "@shoelace-style/shoelace": "2.17",
-    "@typescript-eslint/eslint-plugin": "^8.6",
+    "@typescript-eslint/eslint-plugin": "^20.9.0",
     "@typescript-eslint/parser": "^8.6",
     "@vercel/webpack-asset-relocator-loader": "1.7.4",
     "copy-webpack-plugin": "^12.0.2",
